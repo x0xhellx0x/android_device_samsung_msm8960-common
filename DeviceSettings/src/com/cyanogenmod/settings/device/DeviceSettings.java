@@ -26,12 +26,17 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v13.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.os.SystemProperties;
 
 import com.cyanogenmod.settings.device.R;
 
 import java.util.ArrayList;
 
 public class DeviceSettings extends FragmentActivity {
+
+    private CheckBoxPreference mSwitchStoragePref=null;
+    private static final String TAG = "HellFireParts";
+    private static final String KEY_SWITCH_STORAGE = "key_switch_storage";
 
     public static final String SHARED_PREFERENCES_BASENAME = "com.cyanogenmod.settings.device";
     public static final String ACTION_UPDATE_PREFERENCES = "com.cyanogenmod.settings.device.UPDATE";
@@ -62,6 +67,13 @@ public class DeviceSettings extends FragmentActivity {
         mViewPager = new ViewPager(this);
         mViewPager.setId(R.id.viewPager);
         setContentView(mViewPager);
+        mSwitchStoragePref = (CheckBoxPreference) getPreferenceScreen().findPreference(KEY_SWITCH_STORAGE);
+        mSwitchStoragePref.setChecked((SystemProperties.getInt("persist.sys.vold.switchexternal", 0) == 1));
+        mSwitchStoragePref.setOnPreferenceChangeListener(this);
+        if (SystemProperties.get("ro.vold.switchablepair","").equals("")) {
+            mSwitchStoragePref.setSummary(R.string.storage_switch_unavailable);
+            mSwitchStoragePref.setEnabled(false);
+        }
 
         final ActionBar bar = getActionBar();
         bar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
@@ -101,6 +113,12 @@ public class DeviceSettings extends FragmentActivity {
                 args = _args;
             }
         }
+        
+        if(preference == mSwitchStoragePref) {
+            Log.d(TAG,"Setting persist.sys.vold.switchexternal to "+(mSwitchStoragePref.isChecked() ? "1" : "0"));
+            SystemProperties.set("persist.sys.vold.switchexternal", ((Boolean) newValue) ? "1" : "0");
+
+         }
 
         public TabsAdapter(Activity activity, ViewPager pager) {
             super(activity.getFragmentManager());
