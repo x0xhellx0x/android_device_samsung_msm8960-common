@@ -57,4 +57,10 @@
                 android:entryValues="@array/touchscreen_sensitivity_entries_values"
                 android:defaultValue="50" />
     </PreferenceCategory>
+    <PreferenceCategory android:title="@string/category_storage" />
+    <CheckBoxPreference
+		android:key="key_switch_storage"
+		android:title="@string/storage_switch_title"
+		android:summaryOn="@string/storage_switch_summary_on"
+		android:summaryOff="@string/storage_switch_summary_off" />
 </PreferenceScreen>
