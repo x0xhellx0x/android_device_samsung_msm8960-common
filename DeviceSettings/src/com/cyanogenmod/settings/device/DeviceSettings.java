@@ -92,6 +92,14 @@ public class DeviceSettings extends FragmentActivity {
     }
 
     @Override
+    public boolean onPreferenceChange(Preference preference, Object newValue) {
+        if(preference == mSwitchStoragePref) {
+            Log.d(TAG,"Setting persist.sys.vold.switchexternal to "+(mSwitchStoragePref.isChecked() ? "1" : "0"));
+            SystemProperties.set("persist.sys.vold.switchexternal", ((Boolean) newValue) ? "1" : "0");
+        }
+    }
+    
+    @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putInt("tab", getActionBar().getSelectedNavigationIndex());
@@ -113,12 +121,6 @@ public class DeviceSettings extends FragmentActivity {
                 args = _args;
             }
         }
-        
-        if(preference == mSwitchStoragePref) {
-            Log.d(TAG,"Setting persist.sys.vold.switchexternal to "+(mSwitchStoragePref.isChecked() ? "1" : "0"));
-            SystemProperties.set("persist.sys.vold.switchexternal", ((Boolean) newValue) ? "1" : "0");
-
-         }
 
         public TabsAdapter(Activity activity, ViewPager pager) {
             super(activity.getFragmentManager());
